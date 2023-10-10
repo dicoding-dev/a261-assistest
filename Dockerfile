@@ -1,11 +1,9 @@
 FROM node:18-slim
 
-ARG AGRSGROUP=1004
-
 RUN apt-get update && apt-get install -y gosu
 
 RUN groupadd --force -g $AGRSGROUP assistest
-RUN useradd -ms /bin/bash --no-user-group -g $AGRSGROUP -u 1337 assistest
+RUN useradd -ms /bin/bash assistest
 
 RUN mkdir /home/assistest/app && chown -R assistest:assistest /home/assistest/app
 RUN mkdir /home/assistest/student-app && chown -R assistest:assistest /home/assistest/student-app
