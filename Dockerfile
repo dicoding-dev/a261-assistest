@@ -2,7 +2,6 @@ FROM node:18-slim
 
 RUN apt-get update && apt-get install -y gosu
 
-RUN groupadd --force -g $AGRSGROUP assistest
 RUN useradd -ms /bin/bash assistest
 
 RUN mkdir /home/assistest/app && chown -R assistest:assistest /home/assistest/app
