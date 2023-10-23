@@ -39,7 +39,8 @@ class CourseSubmissionReview {
             rating: courseSubmissionAcception.rating,
             message: courseSubmissionAcception.messages,
             status: ReviewResultStatus.Approve,
-            checklist: this.submissionCriteriaCheck.reviewChecklistResult
+            checklist: this.submissionCriteriaCheck.reviewChecklistResult,
+            draft: false,
         }
     }
 
@@ -52,7 +53,8 @@ class CourseSubmissionReview {
             rating: 0,
             message: courseSubmissionRejection.messages,
             status: ReviewResultStatus.Reject,
-            checklist: this.submissionCriteriaCheck.reviewChecklistResult
+            checklist: this.submissionCriteriaCheck.reviewChecklistResult,
+            draft: true,
         }
     }
 }
