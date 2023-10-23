@@ -28,7 +28,7 @@ class ReportGenerator {
             checklist: reviewResult.checklist,
             checklist_keys: this.getCompletedChecklist(reviewResult),
             is_passed: isApproved,
-            is_draft: true,
+            is_draft: reviewResult.draft,
         };
 
         this.result.push(summary);
