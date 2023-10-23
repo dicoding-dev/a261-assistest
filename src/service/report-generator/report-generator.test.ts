@@ -36,7 +36,8 @@ describe('checklist id resolver test', () => {
             rating: 5,
             status: ReviewResultStatus.Approve,
             checklist: submissionRequirement,
-            message: 'Selamat'
+            message: 'Selamat',
+            draft: false,
         }
 
         const studentProjectPath = './test/student-project/project-with-correct-autoreview-config'
