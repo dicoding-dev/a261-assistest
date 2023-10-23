@@ -4,7 +4,8 @@ interface ReviewResult {
     rating: number,
     message: string,
     status: ReviewResultStatus,
-    checklist: SubmissionRequirement
+    checklist: SubmissionRequirement,
+    draft: boolean,
 }
 
 export enum ReviewResultStatus {
