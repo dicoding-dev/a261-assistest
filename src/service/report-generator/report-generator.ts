@@ -47,7 +47,7 @@ class ReportGenerator {
 
     }
 
-    getReviewMessageWithTemplate(reviewResult: ReviewResult, autoReviewConfig) {
+    getReviewMessageWithTemplate(reviewResult: ReviewResult, autoReviewConfig: any) {
         const mainTemplate = templates.find(template => template.courseId === autoReviewConfig?.course_id)
 
         if (!mainTemplate) {
