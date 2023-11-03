@@ -28,7 +28,7 @@ class ReportGenerator {
             checklist: reviewResult.checklist,
             checklist_keys: this.getCompletedChecklist(reviewResult),
             is_passed: isApproved,
-            is_draft: reviewResult.draft,
+            is_draft: this.getDraftDecision(isApproved, autoReviewConfig),
         };
 
         this.result.push(summary);
@@ -39,6 +39,19 @@ class ReportGenerator {
             mode: '0664'
         })
         raiseDomainEvent('report generated')
+    }
+
+    private getDraftDecision(isApproved: boolean, autoReviewConfig: any): boolean {
+        const allowedCoursesThatFullyGrading = [
+          342, // Back-End Pemula with Google Cloud
+        ]
+
+        if (allowedCoursesThatFullyGrading.includes(autoReviewConfig.course_id)) {
+            // set `draft` to false, if approved is true
+            return !isApproved
+        }
+
+        return true
     }
 
     private getCompletedChecklist(reviewResult: ReviewResult) {
