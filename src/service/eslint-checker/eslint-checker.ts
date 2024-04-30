@@ -11,10 +11,10 @@ class EslintChecker {
 
         try {
             //check eslint config available or not
-            execSync('npx eslint ./', {
+            execSync('npx eslint ./ --ignore-pattern \'eslint.config.*\'', {
                 cwd: submissionProject.packageJsonPath, stdio: "pipe"
             })
-            const result = execSync('npx eslint ./ --rule \'linebreak-style:off\'', {
+            const result = execSync('npx eslint ./ --rule \'linebreak-style:off\' --ignore-pattern \'eslint.config.*\'', {
                 cwd: submissionProject.packageJsonPath,
                 stdio: "pipe"
             })
