@@ -1,4 +1,4 @@
-import {ChildProcess, spawn} from "child_process";
+import {ChildProcess, execSync, spawn} from "child_process";
 import * as tcpPortUsed from 'tcp-port-used';
 import ServerErrorHandler from "./server-error-handler";
 import SubmissionProject from "../../entities/submission-project/submission-project";
@@ -70,14 +70,16 @@ class ServerService {
         let timeOut = 0
         while (timeOut <= timeOutMs) {
             const isUrlActive = await new Promise((resolve, reject) => {
-                http.get(`http://localhost:${port}`, () => {
+                try {
+                    execSync('curl http://localhost:9000', { encoding: 'utf8', stdio: 'ignore' })
                     resolve(true)
-                }).on('error', async (e) => {
-                    if (e.message.includes('ECONNREFUSED') && timeOut >= timeOutMs) {
-                        reject('server not started in localhost:9000')
+                } catch {
+                    if (timeOut >= timeOutMs) {
+                        return reject('server not started in localhost:9000')
                     }
+
                     resolve(false)
-                })
+                }
             })
 
             if (isUrlActive) {
