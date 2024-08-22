@@ -4,7 +4,6 @@ import ServerErrorHandler from "./server-error-handler";
 import SubmissionProject from "../../entities/submission-project/submission-project";
 import {host, port} from "../../config/backend-pemula-project-requirement";
 import {SubmissionRequirement} from "../../config/submission-requirement";
-import * as http from "http";
 import raiseDomainEvent from "../../common/domain-event";
 
 class ServerService {
