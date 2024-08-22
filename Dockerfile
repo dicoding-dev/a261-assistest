@@ -1,15 +1,16 @@
 FROM node:18-slim
 
-RUN apt-get update && apt-get install -y gosu
+# System level dependencies
+RUN apt-get update
+RUN apt install curl -y
 
-RUN useradd -ms /bin/bash assistest
+# Prepare Work Directory
+RUN mkdir -p /home/direviu/app
+WORKDIR /home/direviu/app
+COPY --chown=direviu:direviu . .
 
-RUN mkdir /home/assistest/app && chown -R assistest:assistest /home/assistest/app
-RUN mkdir /home/assistest/student-app && chown -R assistest:assistest /home/assistest/student-app
-RUN mkdir /home/assistest/report && chown -R assistest:assistest /home/assistest/report
-
-WORKDIR /home/assistest/app
-COPY --chown=assistest:assistest . .
+# Preparation Submission Folder
+RUN mkdir -p /home/direviu/app/student-submission
 
 RUN npm config set package-lock false
 RUN yarn install --production=true
