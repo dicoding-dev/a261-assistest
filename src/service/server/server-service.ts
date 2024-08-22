@@ -70,7 +70,7 @@ class ServerService {
         let timeOut = 0
         while (timeOut <= timeOutMs) {
             const isUrlActive = await new Promise((resolve, reject) => {
-                http.get(`http://0.0.0.0:${port}`, () => {
+                http.get(`http://localhost:${port}`, () => {
                     resolve(true)
                 }).on('error', async (e) => {
                     if (e.message.includes('ECONNREFUSED') && timeOut >= timeOutMs) {
