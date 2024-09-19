@@ -10,7 +10,7 @@ WORKDIR /home/direviu/app
 COPY --chown=direviu:direviu . .
 
 # Preparation Submission Folder
-RUN mkdir -p /home/direviu/app/student-submission
+RUN mkdir -p /home/direviu/student-submission
 
 RUN npm config set package-lock false
 RUN yarn install --production=true
