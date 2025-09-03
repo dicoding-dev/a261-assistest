@@ -43,7 +43,8 @@ class ReportGenerator {
 
     private getDraftDecision(isApproved: boolean, autoReviewConfig: any): boolean {
         const allowedCoursesThatFullyGrading = [
-          342, // Back-End Pemula with Google Cloud
+            342, // Back-End Pemula with Google Cloud
+            261, // Back-End Pemula with AWS
         ]
 
         if (allowedCoursesThatFullyGrading.includes(autoReviewConfig.course_id)) {
