@@ -62,7 +62,7 @@ export default class SubmissionProjectFactory {
             throw new ProjectErrorException('PROJECT_CONTAIN_DATABASE_DEPENDENCY')
         }
 
-        const possibleOtherFrameworkDependencies = ['express']
+        const possibleOtherFrameworkDependencies = ['@nestjs/core', 'koa']
         const isProjectContainOtherFramework = dependencies.some(dependency => possibleOtherFrameworkDependencies.includes(dependency))
         if (isProjectContainOtherFramework) {
             throw new ProjectErrorException('PROJECT_CONTAIN_OTHER_FRAMEWORK_DEPENDENCY')
