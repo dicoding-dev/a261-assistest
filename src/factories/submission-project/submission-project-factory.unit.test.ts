@@ -55,7 +55,7 @@ describe('create submission project test', () => {
     });
 
     it('should throw error when project contain other framework', function () {
-        mockFS.readFileSync.mockReturnValue('{ "scripts": { }, "dependencies": { "express": 10.2 }}')
+        mockFS.readFileSync.mockReturnValue('{ "scripts": { }, "dependencies": { "koa": 3 }}')
 
         expect(() => submissionProjectFactory.create(submissionRequirement,'.'))
             .toThrow(new ProjectErrorException('PROJECT_CONTAIN_OTHER_FRAMEWORK_DEPENDENCY'))
