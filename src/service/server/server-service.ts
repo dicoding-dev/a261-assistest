@@ -20,7 +20,7 @@ class ServerService {
             await this.validateServerActive(500, 10000)
             submissionRequirement.project_have_correct_port.status = true
             raiseDomainEvent('server started')
-        } catch (e) {
+        } catch {
             const serverErrorHandler = new ServerErrorHandler(this._errorLog, submissionProject)
             await this.stop()
             serverErrorHandler.throwError()

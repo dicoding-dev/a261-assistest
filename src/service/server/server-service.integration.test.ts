@@ -107,7 +107,7 @@ describe('server service test', () => {
         try {
             await tcpPortUsed.waitUntilUsed(port, null, 2000)
             return server.pid
-        } catch (e) {
+        } catch {
             throw Error('Failed to start server')
         }
     }
