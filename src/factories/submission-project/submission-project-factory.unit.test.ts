@@ -87,6 +87,4 @@ describe('create submission project test', () => {
         expect(submissionProject.packageJsonPath).toStrictEqual('/home/app/1234')
         expect(submissionRequirement.project_have_correct_runner_script.status).toBeTruthy()
     });
-
-
 })
