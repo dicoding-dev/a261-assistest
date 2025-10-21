@@ -10,7 +10,6 @@ describe('postman runner test', () => {
         it('should skip this test when running in CI environment', function () {
             expect(true).toBeTruthy()
         });
-
         return
     }
 
