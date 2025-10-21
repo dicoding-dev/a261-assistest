@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires,no-undef
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const http = require("http");
 
 const host = 'localhost';
