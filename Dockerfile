@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM node:24-slim
 
 # System level dependencies
 RUN apt-get update
@@ -13,6 +13,6 @@ COPY --chown=direviu:direviu . .
 RUN mkdir -p /home/direviu/student-submission
 
 RUN npm config set package-lock false
-RUN yarn install --production=true
+RUN npm install --omit=dev
 
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
