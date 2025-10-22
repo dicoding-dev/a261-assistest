@@ -90,7 +90,7 @@ class ReportGenerator {
         const getConfigFile = (configFilePath: string) => {
             try {
                 return JSON.parse(readFileSync(configFilePath).toString())
-            } catch (e) {
+            } catch {
                 return null
             }
         }

@@ -51,7 +51,7 @@ describe('server service test', () => {
 
         const spy = jest.spyOn(container, 'stop');
         await expect(container.run(submissionProject, submissionRequirement)).rejects.toThrow(new ProjectErrorException('PORT_NOT_MEET_REQUIREMENT'))
-        await expect(spy).toBeCalled()
+        await expect(spy).toHaveBeenCalled()
         expect(submissionRequirement.project_have_correct_port.status).toBeFalsy()
     });
 
@@ -107,7 +107,7 @@ describe('server service test', () => {
         try {
             await tcpPortUsed.waitUntilUsed(port, null, 2000)
             return server.pid
-        } catch (e) {
+        } catch {
             throw Error('Failed to start server')
         }
     }

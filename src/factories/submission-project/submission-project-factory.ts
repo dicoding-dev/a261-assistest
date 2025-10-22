@@ -88,7 +88,7 @@ export default class SubmissionProjectFactory {
             this.packageJsonContent = content
             return content
         } catch (e) {
-            if (e.message.includes("Unexpected token")) {
+            if (e instanceof SyntaxError) {
                 throw new ProjectErrorException('CANNOT_PARSE_PACKAGE_JSON')
             }
         }

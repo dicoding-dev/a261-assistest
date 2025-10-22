@@ -1,0 +1,37 @@
+{
+  "name": "bookshelf-api",
+  "version": "1.0.0",
+  "description": "Aplikasi Back-end menggunakan Hapi untuk mengelola data buku",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "start-dev": "nodemon src/index.js",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "test": "echo \"Tidak ada tes yang didefinisikan\" && exit 0"
+  },
+  "keywords": [
+    "Bookshelf API",
+    "Aplikasi Back-end menggunakan Hapi",
+    "Dicoding"
+  ],
+  "author": "Erri Efraim Kinatana Sebayang",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^21.4.3",
+    "dotenv": "^17.2.3",
+    "nanoid": "^5.1.6"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=18.18.0",
+    "npm": ">=11.6.2"
+  }
+}
