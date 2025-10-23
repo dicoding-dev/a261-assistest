@@ -5,7 +5,6 @@ interface ReviewResult {
     message: string,
     status: ReviewResultStatus,
     checklist: SubmissionRequirement,
-    draft: boolean,
 }
 
 export enum ReviewResultStatus {
