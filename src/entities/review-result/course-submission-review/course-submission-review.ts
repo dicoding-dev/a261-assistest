@@ -40,7 +40,6 @@ class CourseSubmissionReview {
             message: courseSubmissionAcception.messages,
             status: ReviewResultStatus.Approve,
             checklist: this.submissionCriteriaCheck.reviewChecklistResult,
-            draft: false,
         }
     }
 
@@ -54,7 +53,6 @@ class CourseSubmissionReview {
             message: courseSubmissionRejection.messages,
             status: ReviewResultStatus.Reject,
             checklist: this.submissionCriteriaCheck.reviewChecklistResult,
-            draft: true,
         }
     }
 }

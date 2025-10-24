@@ -18,12 +18,17 @@ class ReportGenerator {
 
         const autoReviewConfig = this.getAutoReviewConfig(submissionPath)
 
+        const isMassiveRejection = autoReviewConfig.rejected_count >= 5
+
+        const isNeedSpecialAttention = isMassiveRejection && !isApproved;
+
         const summary = {
             submission_id: autoReviewConfig?.id,
             review_id: Date.now(),
             is_approved: isApproved,
             rating: reviewResult.rating,
-            message: this.getReviewMessageWithTemplate(reviewResult, autoReviewConfig),
+            message: isNeedSpecialAttention ? '<p></p>' : this.getReviewMessageWithTemplate(reviewResult, autoReviewConfig),
+            note: isNeedSpecialAttention ? 'Dear reviewer, karena siswa sudah di-reject 5 kali atau lebih. Minta tolong review secara lebih intens ya! ^_^' : undefined,
             submission_path: submissionPath,
             checklist: reviewResult.checklist,
             checklist_keys: this.getCompletedChecklist(reviewResult),
@@ -41,18 +46,18 @@ class ReportGenerator {
         raiseDomainEvent('report generated')
     }
 
-    private getDraftDecision(isApproved: boolean, autoReviewConfig: any): boolean {
-        const allowedCoursesThatFullyGrading = [
-            342, // Back-End Pemula with Google Cloud
-            261, // Back-End Pemula with AWS
-        ]
-
-        if (allowedCoursesThatFullyGrading.includes(autoReviewConfig.course_id)) {
-            // set `draft` to false, if approved is true
-            return !isApproved
+    private getDraftDecision(isApproved: boolean, autoReviewConfig: any): boolean | null {
+        if (isApproved) {
+            return null;
         }
 
-        return true
+        const rejectedCount = autoReviewConfig.rejected_count;
+
+        if (rejectedCount < 3) {
+            return null;
+        }
+
+        return true;
     }
 
     private getCompletedChecklist(reviewResult: ReviewResult) {
