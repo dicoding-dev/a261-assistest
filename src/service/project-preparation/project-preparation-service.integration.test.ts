@@ -2,6 +2,7 @@ import * as fs from "fs";
 import ProjectPreparationService from "./project-preparation-service";
 import SubmissionProject from "../../entities/submission-project/submission-project";
 import ServerErrorException from "../../exception/server-error-exception";
+import ProjectFramework from "../../entities/submission-project/project-framework";
 
 describe('project preparation test', () => {
     it('should install project properly', function () {
@@ -22,7 +23,8 @@ describe('project preparation test', () => {
                     "nanoid": "^4.0.0"
                 }
             },
-            runnerCommand: 'start'
+            runnerCommand: 'start',
+            framework: ProjectFramework.Unknown
         }
         const projectPreparation = new ProjectPreparationService()
         projectPreparation.install(submissionProject)
@@ -41,7 +43,8 @@ describe('project preparation test', () => {
                     "@hapi/hapi": "^21.1.2"
                 }
             },
-            runnerCommand: 'start'
+            runnerCommand: 'start',
+            framework: ProjectFramework.Unknown
         }
         const projectPreparation = new ProjectPreparationService()
         expect(()=> projectPreparation.install(submissionProject)).toThrow(new ServerErrorException('FAIL_INSTALLING_PACKAGE'))
