@@ -12,6 +12,7 @@ import ReviewResult from "./entities/review-result/course-submission-review/revi
 import SubmissionProjectFactory from "./factories/submission-project/submission-project-factory";
 import getSubmissionRequirement, {SubmissionRequirement} from "./config/submission-requirement";
 import raiseDomainEvent from "./common/domain-event";
+import ProjectFramework from "./entities/submission-project/project-framework";
 
 class Main {
     private postmanRunner: PostmanRunner;
@@ -51,7 +52,7 @@ class Main {
 
             const eslintCheckResult = this.eslintChecker.check(submissionProject)
             raiseDomainEvent('eslint check completed')
-            return this.generateReviewResult(submissionCriteriaCheck, eslintCheckResult)
+            return this.generateReviewResult(submissionCriteriaCheck, eslintCheckResult, null, submissionProject.framework)
         } catch (e) {
             if (e instanceof SubmissionErrorException) {
                 submissionCriteriaCheck = submissionCriteriaCheck ?? this.submissionCriteriaCheckFactory.check(this.submissionRequirements)
@@ -68,8 +69,8 @@ class Main {
         }
     }
 
-    private generateReviewResult(submissionCriteriaCheck, eslintCheckResult?, submissionErrorException?) {
-        const courseSubmissionReview = new CourseSubmissionReview(submissionCriteriaCheck, eslintCheckResult, submissionErrorException)
+    private generateReviewResult(submissionCriteriaCheck, eslintCheckResult?, submissionErrorException?, projectFramework?: ProjectFramework) {
+        const courseSubmissionReview = new CourseSubmissionReview(submissionCriteriaCheck, eslintCheckResult, submissionErrorException, projectFramework)
         return courseSubmissionReview.review()
     }
 

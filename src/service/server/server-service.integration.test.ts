@@ -6,11 +6,12 @@ import {spawn} from "child_process";
 import PackageJson from "../../entities/submission-project/package-json";
 import ProjectErrorException from "../../exception/project-error-exception";
 import getSubmissionRequirement from "../../config/submission-requirement";
+import ProjectFramework from "../../entities/submission-project/project-framework";
 
 jest.setTimeout(15000)
 describe('server service test', () => {
     const submissionRequirement = getSubmissionRequirement()
-    it.skip('should start & stop server', async function () {
+    it('should start & stop server', async function () {
         for (let i = 0; i < 10; i++) {
             const port = 9000
             const serverPid = await startFakeServer(port)
@@ -26,7 +27,8 @@ describe('server service test', () => {
         const submissionProject: SubmissionProject = {
             packageJsonPath: 'test/student-project/sample-project',
             packageJsonContent: <PackageJson>{},
-            runnerCommand: 'start'
+            runnerCommand: 'start',
+            framework: ProjectFramework.Unknown
         }
 
         const server = new ServerService()
@@ -44,7 +46,8 @@ describe('server service test', () => {
         const submissionProject: SubmissionProject = {
             packageJsonPath: 'test/student-project/project-with-bad-port',
             packageJsonContent: <PackageJson>{},
-            runnerCommand: 'start'
+            runnerCommand: 'start',
+            framework: ProjectFramework.Unknown
         }
 
         const container = new ServerService()
@@ -62,7 +65,8 @@ describe('server service test', () => {
         const submissionProject: SubmissionProject = {
             packageJsonPath: 'test/student-project/sample-project',
             packageJsonContent: <PackageJson>{},
-            runnerCommand: 'start'
+            runnerCommand: 'start',
+            framework: ProjectFramework.Unknown
         }
 
         const container = new ServerService()
@@ -84,7 +88,8 @@ describe('server service test', () => {
         const submissionProject: SubmissionProject = {
             packageJsonPath: 'test/student-project/sample-project',
             packageJsonContent: <PackageJson>{},
-            runnerCommand: 'start'
+            runnerCommand: 'start',
+            framework: ProjectFramework.Unknown
         }
 
         const container = new ServerService()
@@ -123,10 +128,25 @@ describe('server service test', () => {
     async function killServer(serverPid: number, port) {
         process.kill(-serverPid)
         try {
-            await tcpPortUsed.waitUntilFree(port, 100, 4000)
+            await waitUntilPortFree(port)
         } catch (e) {
             console.log(e)
             throw Error('Failed to kill server')
+        }
+    }
+
+    /**
+     * tcp-port-used can hit a transient ECONNRESET while the server socket is being torn down,
+     * which is the same race ServerService.stop() tolerates. Retrying keeps this test stable.
+     */
+    async function waitUntilPortFree(port, remainingRetry = 1) {
+        try {
+            await tcpPortUsed.waitUntilFree(port, 100, 2000)
+        } catch (e) {
+            if (remainingRetry < 1 || !e.message?.includes('ECONNRESET')) {
+                throw e
+            }
+            await waitUntilPortFree(port, remainingRetry - 1)
         }
     }
 

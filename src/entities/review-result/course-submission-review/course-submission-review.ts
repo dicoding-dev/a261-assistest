@@ -5,20 +5,24 @@ import EslintCheckResult from "../../../service/eslint-checker/eslint-check-resu
 import SubmissionCriteriaCheck from "../submission-criteria-check/submission-criteria-check";
 import ReviewResult, {ReviewResultStatus} from "./review-result";
 import SubmissionRatingFactory from "../../../factories/submission-rating/submission-rating-factory";
+import ProjectFramework from "../../submission-project/project-framework";
 
 class CourseSubmissionReview {
     private readonly submissionCriteriaCheck: SubmissionCriteriaCheck;
     private readonly rejectException?: SubmissionErrorException;
     private readonly eslintCheckResult?: EslintCheckResult;
+    private readonly projectFramework: ProjectFramework;
 
     constructor(
         submissionCriteriaCheck: SubmissionCriteriaCheck,
         eslintCheckResult?: EslintCheckResult,
-        rejectException?: SubmissionErrorException
+        rejectException?: SubmissionErrorException,
+        projectFramework: ProjectFramework = ProjectFramework.Unknown
     ) {
         this.rejectException = rejectException;
         this.submissionCriteriaCheck = submissionCriteriaCheck;
         this.eslintCheckResult = eslintCheckResult;
+        this.projectFramework = projectFramework;
     }
 
 
@@ -32,7 +36,7 @@ class CourseSubmissionReview {
 
     private generateApproval(): ReviewResult {
         const submissionRatingGenerator = new SubmissionRatingFactory(this.submissionCriteriaCheck.failurePostmanTest, this.eslintCheckResult)
-        const courseSubmissionAcception = new CourseSubmissionAcception(this.submissionCriteriaCheck, submissionRatingGenerator)
+        const courseSubmissionAcception = new CourseSubmissionAcception(this.submissionCriteriaCheck, submissionRatingGenerator, this.projectFramework)
         courseSubmissionAcception.accept()
 
         return <ReviewResult>{

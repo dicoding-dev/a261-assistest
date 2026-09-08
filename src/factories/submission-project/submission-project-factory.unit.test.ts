@@ -2,6 +2,7 @@ import * as fs from "fs";
 import ProjectErrorException from "../../exception/project-error-exception";
 import SubmissionProjectFactory from "./submission-project-factory";
 import getSubmissionRequirement from "../../config/submission-requirement";
+import ProjectFramework from "../../entities/submission-project/project-framework";
 
 /**
  * @review need to remove mock
@@ -86,5 +87,44 @@ describe('create submission project test', () => {
         expect(submissionProject.packageJsonContent).toStrictEqual({ "scripts": { "start": "node src/index.js" }})
         expect(submissionProject.packageJsonPath).toStrictEqual('/home/app/1234')
         expect(submissionRequirement.project_have_correct_runner_script.status).toBeTruthy()
+    });
+
+    describe('framework detection', () => {
+        const createWithDependencies = (dependencies: string) => {
+            mockFS.readFileSync.mockReturnValue(`{ "scripts": { "start": "node src/index.js" }, ${dependencies} }`)
+            mockFS.existsSync.mockReturnValue(false)
+
+            return submissionProjectFactory.create(submissionRequirement, '/home/app/1234')
+        }
+
+        it('should detect hapi framework', function () {
+            expect(createWithDependencies('"dependencies": { "@hapi/hapi": "^21.4.3" }').framework)
+                .toStrictEqual(ProjectFramework.Hapi)
+        });
+
+        it('should detect hapi framework from its legacy package name', function () {
+            expect(createWithDependencies('"dependencies": { "hapi": "^18.1.0" }').framework)
+                .toStrictEqual(ProjectFramework.Hapi)
+        });
+
+        it('should detect express framework', function () {
+            expect(createWithDependencies('"dependencies": { "express": "^5.1.0" }').framework)
+                .toStrictEqual(ProjectFramework.Express)
+        });
+
+        it('should detect framework listed on dev dependencies', function () {
+            expect(createWithDependencies('"devDependencies": { "express": "^5.1.0" }').framework)
+                .toStrictEqual(ProjectFramework.Express)
+        });
+
+        it('should not detect any framework when project use both of them', function () {
+            expect(createWithDependencies('"dependencies": { "express": "^5.1.0", "@hapi/hapi": "^21.4.3" }').framework)
+                .toStrictEqual(ProjectFramework.Unknown)
+        });
+
+        it('should not detect any framework when project has no dependencies', function () {
+            expect(createWithDependencies('"dependencies": { "nanoid": "^5.1.6" }').framework)
+                .toStrictEqual(ProjectFramework.Unknown)
+        });
     });
 })

@@ -2,6 +2,8 @@ import exceptionToReviewMessage from "../../../exception/exception-to-review-mes
 import SubmissionRatingFactory from "../../../factories/submission-rating/submission-rating-factory";
 import SubmissionCriteriaCheck from "../submission-criteria-check/submission-criteria-check";
 import {SubmissionRequirement} from "../../../config/submission-requirement";
+import ProjectFramework from "../../submission-project/project-framework";
+import bestPracticeReference from "../../../config/best-practice-reference";
 
 
 class CourseSubmissionAcception {
@@ -10,11 +12,17 @@ class CourseSubmissionAcception {
     private submissionRatingGenerator: SubmissionRatingFactory;
     private readonly _reviewChecklistResults: SubmissionRequirement;
     private submissionCriteriaCheck: SubmissionCriteriaCheck;
+    private readonly projectFramework: ProjectFramework;
 
-    constructor(submissionCriteriaCheck: SubmissionCriteriaCheck, submissionRatingGenerator: SubmissionRatingFactory) {
+    constructor(
+        submissionCriteriaCheck: SubmissionCriteriaCheck,
+        submissionRatingGenerator: SubmissionRatingFactory,
+        projectFramework: ProjectFramework = ProjectFramework.Unknown
+    ) {
         this.submissionRatingGenerator = submissionRatingGenerator;
         this._reviewChecklistResults = submissionCriteriaCheck.reviewChecklistResult;
         this.submissionCriteriaCheck = submissionCriteriaCheck
+        this.projectFramework = projectFramework
     }
 
     accept() {
@@ -28,7 +36,18 @@ class CourseSubmissionAcception {
         if (messageFromEslint || messageFromOptionalTest) {
             return messageFromEslint + messageFromOptionalTest
         }
-        return '<li>Untuk mengetahui best practices yang ada, terutama penggunaan framework atau tools, cara terbaiknya adalah dengan bereksplorasi kepada dokumentasi resmi yang diberikan. Semakin kamu mengenal frameworknya tentu semakin paham best practice penggunaannya. Silakan eksplorasi dokumentasi beberapa stack framework dan tools yang dapat digunakan pada proyekmu.<ul><li><strong>Hapi Framework</strong>:&nbsp;<a data-mce-href="https://hapi.dev/tutorials/?lang=en_US" data-target-href="https://hapi.dev/tutorials/?lang=en_US" href="https://hapi.dev/tutorials/?lang=en_US" rel="noreferrer nofollow noopener">https://hapi.dev/tutorials/?lang=en_US</a><br>Kamu bisa eksplor tentang apa saja yang bisa digunakan pada framework Hapi.</li><li><strong>Joi</strong>:&nbsp;<a data-mce-href="https://joi.dev/" data-target-href="https://joi.dev/" href="https://joi.dev/" rel="noreferrer nofollow noopener">https://joi.dev/</a><br>Jika kamu ingin membuat validasi data dengan mudah kamu juga bisa menggunakan library Joi.</li><li><strong>Postgres</strong>:&nbsp;<a data-mce-href="https://www.postgresql.org/docs/current/index.html" data-target-href="https://www.postgresql.org/docs/current/index.html" href="https://www.postgresql.org/docs/current/index.html" rel="noreferrer nofollow noopener">https://www.postgresql.org/docs/current/index.html</a><br>Agar aplikasi yang kamu buat datanya bisa bertahan ketika server direstart, kamu bisa mempelajari postrgresql sebagai penyimpanan data.</li><li><strong>node-postgres</strong>:&nbsp;<a data-mce-href="https://node-postgres.com/" data-target-href="https://node-postgres.com/" href="https://node-postgres.com/" rel="noreferrer nofollow noopener">https://node-postgres.com/</a><br>Untuk menghubungkan aplikasi nodejs dengan postgresql kamu bisa menggunakan library node-postgres.</li></ul></li>'
+        return this.getMessageFromBestPracticeReference()
+    }
+
+    private getMessageFromBestPracticeReference(): string {
+        const references = bestPracticeReference[this.projectFramework]
+            .map(reference => {
+                const link = `<a data-mce-href="${reference.url}" data-target-href="${reference.url}" href="${reference.url}" rel="noreferrer nofollow noopener">${reference.url}</a>`
+                return `<li><strong>${reference.name}</strong>:&nbsp;${link}<br>${reference.description}</li>`
+            })
+            .join('')
+
+        return `<li>Untuk mengetahui best practices yang ada, terutama penggunaan framework atau tools, cara terbaiknya adalah dengan bereksplorasi kepada dokumentasi resmi yang diberikan. Semakin kamu mengenal frameworknya tentu semakin paham best practice penggunaannya. Silakan eksplorasi dokumentasi beberapa stack framework dan tools yang dapat digunakan pada proyekmu.<ul>${references}</ul></li>`
     }
 
 
