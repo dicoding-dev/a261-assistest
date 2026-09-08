@@ -3,6 +3,7 @@ import ProjectErrorException from "../../exception/project-error-exception";
 import ServerErrorException from "../../exception/server-error-exception";
 import SubmissionProject from "../../entities/submission-project/submission-project";
 import PackageJson from "../../entities/submission-project/package-json";
+import ProjectFramework from "../../entities/submission-project/project-framework";
 
 
 describe('test server utils', () => {
@@ -38,7 +39,8 @@ describe('test server utils', () => {
         const submissionProject :SubmissionProject = {
             packageJsonPath: '',
             packageJsonContent: <PackageJson>{},
-            runnerCommand: ''
+            runnerCommand: '',
+            framework: ProjectFramework.Unknown
         }
        return  new ServerErrorHandler(logErrors, submissionProject)
     }
