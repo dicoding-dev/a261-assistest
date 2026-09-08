@@ -3,6 +3,7 @@ import EslintCheckResult from "../../../service/eslint-checker/eslint-check-resu
 import SubmissionRatingFactory from "../../../factories/submission-rating/submission-rating-factory";
 import SubmissionCriteriaCheck from "../submission-criteria-check/submission-criteria-check";
 import getSubmissionRequirement from "../../../config/submission-requirement";
+import ProjectFramework from "../../submission-project/project-framework";
 
 describe('course submission acception test', () => {
     it('should accept submission properly', function () {
@@ -114,5 +115,67 @@ describe('course submission acception test', () => {
 
         expect(courseSubmissionAcception.rating).toStrictEqual(4)
         expect(courseSubmissionAcception.messages).toContain('...')
+    });
+
+    describe('best practice reference on advice message', () => {
+        const acceptFlawlessSubmission = (projectFramework?: ProjectFramework) => {
+            const submissionRatingGenerator = <SubmissionRatingFactory>{
+                get rating(): number {
+                    return 5
+                },
+                get eslintCheckResult(): EslintCheckResult {
+                    return <EslintCheckResult>{
+                        get isSuccess(): boolean {
+                            return true
+                        },
+                    }
+                }
+            }
+
+            const courseSubmissionAcception = new CourseSubmissionAcception(
+                <SubmissionCriteriaCheck>{}, submissionRatingGenerator, projectFramework
+            )
+            courseSubmissionAcception.accept()
+
+            return courseSubmissionAcception.messages
+        }
+
+        it('should only suggest hapi documentation when project use hapi', function () {
+            const messages = acceptFlawlessSubmission(ProjectFramework.Hapi)
+
+            expect(messages).toContain('<strong>Hapi Framework</strong>')
+            expect(messages).toContain('<strong>Joi</strong>')
+            expect(messages).not.toContain('<strong>Express Framework</strong>')
+            expect(messages).not.toContain('<strong>express-validator</strong>')
+        });
+
+        it('should only suggest express documentation when project use express', function () {
+            const messages = acceptFlawlessSubmission(ProjectFramework.Express)
+
+            expect(messages).toContain('<strong>Express Framework</strong>')
+            expect(messages).toContain('<strong>express-validator</strong>')
+            expect(messages).not.toContain('<strong>Hapi Framework</strong>')
+            expect(messages).not.toContain('<strong>Joi</strong>')
+        });
+
+        it('should suggest both framework documentation when framework is unknown', function () {
+            const messages = acceptFlawlessSubmission(ProjectFramework.Unknown)
+
+            expect(messages).toContain('<strong>Hapi Framework</strong>')
+            expect(messages).toContain('<strong>Express Framework</strong>')
+        });
+
+        it('should fall back to unknown framework when framework is not given', function () {
+            expect(acceptFlawlessSubmission()).toStrictEqual(acceptFlawlessSubmission(ProjectFramework.Unknown))
+        });
+
+        it('should always suggest database documentation', function () {
+            [ProjectFramework.Hapi, ProjectFramework.Express, ProjectFramework.Unknown].forEach(projectFramework => {
+                const messages = acceptFlawlessSubmission(projectFramework)
+
+                expect(messages).toContain('<strong>Postgres</strong>')
+                expect(messages).toContain('<strong>node-postgres</strong>')
+            })
+        });
     });
 })
