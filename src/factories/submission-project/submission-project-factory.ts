@@ -5,6 +5,7 @@ import PackageJson from "../../entities/submission-project/package-json";
 import SubmissionProject from "../../entities/submission-project/submission-project";
 import {SubmissionRequirement} from "../../config/submission-requirement";
 import domainEvent from "../../common/domain-event";
+import ProjectFramework from "../../entities/submission-project/project-framework";
 
 
 export default class SubmissionProjectFactory {
@@ -25,8 +26,28 @@ export default class SubmissionProjectFactory {
         return {
             packageJsonContent: this.packageJsonContent,
             packageJsonPath: projectPath,
-            runnerCommand
+            runnerCommand,
+            framework: this.getFramework()
         }
+    }
+
+    private getFramework(): ProjectFramework {
+        const dependencies = {
+            ...this.packageJsonContent.dependencies,
+            ...this.packageJsonContent.devDependencies
+        }
+
+        const detectedFrameworks = [
+            {framework: ProjectFramework.Hapi, packages: ['@hapi/hapi', 'hapi']},
+            {framework: ProjectFramework.Express, packages: ['express']}
+        ].filter(candidate => candidate.packages.some(packageName => packageName in dependencies))
+
+        // a project using both frameworks is ambiguous, so it gets the generic advice
+        if (detectedFrameworks.length !== 1) {
+            return ProjectFramework.Unknown
+        }
+
+        return detectedFrameworks[0].framework
     }
 
     private validate(projectPath: string) {
