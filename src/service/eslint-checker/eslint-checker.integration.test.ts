@@ -28,13 +28,16 @@ describe('eslint checker', () => {
         expect(checkResult.reason).toContain('problems')
     });
 
-    //to run this test you need remove .eslintrc.cjs first
-    it.skip('should return error when project is installed eslint but config is not available', function () {
+    it('should return error when project is installed eslint but config is not available', function () {
         const project = createProject('./test/student-project/project-with-eslint-package-but-no-config')
 
-        const checkResult = eslintChecker.check(project)
-        expect(checkResult.isSuccess).toStrictEqual(false)
-        expect(checkResult.reason).toContain('ESLint couldn\'t find a configuration file')
+        expect(eslintChecker.check(project)).toStrictEqual({isSuccess: false, code: 'ESLINT_CONFIG_NOT_FOUND'})
+    });
+
+    it('should recognise a flat eslint config', function () {
+        const project = createProject('./test/student/passed-sample-with-eslint')
+
+        expect(eslintChecker.check(project).code).not.toStrictEqual('ESLINT_CONFIG_NOT_FOUND')
     });
 
     it('should return success if no error happen', function () {
